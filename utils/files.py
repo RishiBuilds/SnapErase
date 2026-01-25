@@ -2,6 +2,7 @@ import os
 import hashlib
 import uuid
 import logging
+from typing import Tuple, Optional
 from werkzeug.utils import secure_filename
 from flask import current_app
 from werkzeug.datastructures import FileStorage
@@ -12,12 +13,12 @@ logger = logging.getLogger(__name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 ALLOWED_MIME_TYPES = {'image/png', 'image/jpeg', 'image/webp'}
 
-def allowed_file(filename):
+def allowed_file(filename: str) -> bool:
     """Check if the file has an allowed extension."""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def validate_image(file: FileStorage):
+def validate_image(file: FileStorage) -> Tuple[bool, Optional[str]]:
     """
     Validate image file based on MIME type and size.
     """
@@ -39,22 +40,23 @@ def validate_image(file: FileStorage):
     
     return True, None
 
-def save_temp_file(file: FileStorage, folder: str):
+def save_temp_file(file: FileStorage, folder: str) -> str:
     """
     Sanitize filename and save to a temporary folder with a unique ID.
+    Return the absolute path.
     """
-    original_filename = secure_filename(file.filename)
+    original_filename = secure_filename(file.filename) if file.filename else "unnamed"
     unique_id = uuid.uuid4().hex
     filename = f"{unique_id}_{original_filename}"
     filepath = os.path.join(folder, filename)
     file.save(filepath)
     return filepath
 
-def get_image_hash(image_bytes):
+def get_image_hash(image_bytes: bytes) -> str:
     """Generate a SHA256 hash for image bytes to use as cache key."""
     return hashlib.sha256(image_bytes).hexdigest()
 
-def cleanup_files(*filepaths):
+def cleanup_files(*filepaths: str) -> None:
     """Delete files from the filesystem."""
     for filepath in filepaths:
         try:

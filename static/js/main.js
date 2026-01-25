@@ -104,12 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imgAfter.style.left = `${pos}%`;
             imgAfter.style.objectPosition = `${pos}% 0%`; // Important for fixed background effect if desired, but here we use simple clip-path alternative or width
 
-            // Standard width-based implementation
-            imgAfter.style.width = `${100 - pos}%`;
-            imgAfter.style.left = `auto`;
-            imgAfter.style.right = `0`;
-
-            // Better way: imgBefore is full width, imgAfter is full width but clipped
+            // Clip-path implementation (More performant)
             imgAfter.style.width = `100%`;
             imgAfter.style.left = `0`;
             imgAfter.style.clipPath = `inset(0 0 0 ${pos}%)`;
