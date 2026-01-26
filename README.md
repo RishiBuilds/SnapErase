@@ -1,5 +1,6 @@
 # SnapErase 📸
 
+[![Release](https://img.shields.io/github/v/release/RishiBuilds/SnapErase)](https://github.com/RishiBuilds/SnapErase/releases)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3.3%2B-lightgrey?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker&logoColor=white)](https://www.docker.com/)
