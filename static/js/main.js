@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         hideError();
         uploadZone.style.display = 'none';
-        loader.style.display = 'block'; 
+        loader.style.display = 'block';
         resultState.style.display = 'none';
 
         // Start Progress Simulation
@@ -85,8 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 completeProgress().then(() => {
                     loader.style.display = 'none';
                     resultState.style.display = 'block';
+                    resultState.classList.add('fade-in');
                     initSlider();
-                    // Scroll to result on mobile
+
                     if (window.innerWidth < 768) {
                         resultState.scrollIntoView({ behavior: 'smooth' });
                     }
@@ -111,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         progressInterval = setInterval(() => {
             if (progress < 90) {
-                progress += Math.random() * 5; 
-                if (progress > 90) progress = 90; 
+                progress += Math.random() * 5;
+                if (progress > 90) progress = 90;
 
                 progressBar.style.width = `${progress}%`;
 
@@ -127,46 +128,122 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(progressInterval);
             progressBar.style.width = '100%';
             progressText.textContent = "Done!";
-            setTimeout(resolve, 500); 
+            setTimeout(resolve, 500);
         });
     }
 
     // --- Slider Logic ---
+    class ImageCompareSlider {
+        constructor(container, handle, imgAfter) {
+            this.container = container;
+            this.handle = handle;
+            this.imgAfter = imgAfter;
+            this.isResizing = false;
+            this.position = 50;
+
+            // Bind methods
+            this.startResize = this.startResize.bind(this);
+            this.stopResize = this.stopResize.bind(this);
+            this.handleResize = this.handleResize.bind(this);
+            this.handleKeydown = this.handleKeydown.bind(this);
+
+            this.init();
+        }
+
+        init() {
+            // Mouse & Touch Events
+            this.handle.addEventListener('mousedown', this.startResize);
+            this.container.addEventListener('mousedown', this.startResize);
+
+            window.addEventListener('mouseup', this.stopResize);
+            window.addEventListener('mousemove', this.handleResize);
+
+            // Touch support
+            this.handle.addEventListener('touchstart', (e) => {
+                this.startResize(e);
+            }, { passive: false });
+            this.container.addEventListener('touchstart', (e) => {
+                this.startResize(e);
+            }, { passive: false });
+
+            window.addEventListener('touchend', this.stopResize);
+            window.addEventListener('touchmove', this.handleResize, { passive: false });
+
+            // Keyboard support
+            this.handle.setAttribute('tabindex', '0');
+            this.handle.setAttribute('role', 'slider');
+            this.handle.setAttribute('aria-label', 'Comparison slider');
+            this.handle.setAttribute('aria-valuemin', '0');
+            this.handle.setAttribute('aria-valuemax', '100');
+            this.handle.addEventListener('keydown', this.handleKeydown);
+
+            // Initial Draw
+            this.setPosition(50);
+        }
+
+        startResize(e) {
+            if (e.type === 'touchstart') {
+            }
+            this.isResizing = true;
+            this.container.classList.add('resizing');
+
+            this.handleResize(e);
+        }
+
+        stopResize() {
+            this.isResizing = false;
+            this.container.classList.remove('resizing');
+        }
+
+        handleResize(e) {
+            if (!this.isResizing) return;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+            const rect = this.container.getBoundingClientRect();
+            let pos = ((clientX - rect.left) / rect.width) * 100;
+
+            this.setPosition(pos);
+        }
+
+        handleKeydown(e) {
+            let step = 5;
+            if (e.shiftKey) step = 10;
+
+            if (e.key === 'ArrowLeft') {
+                this.setPosition(this.position - step);
+            } else if (e.key === 'ArrowRight') {
+                this.setPosition(this.position + step);
+            }
+        }
+
+        setPosition(pos) {
+            this.position = Math.max(0, Math.min(pos, 100));
+
+            requestAnimationFrame(() => {
+                this.imgAfter.style.width = '100%';
+                this.imgAfter.style.left = '0';
+                this.imgAfter.style.clipPath = `inset(0 0 0 ${this.position}%)`;
+
+                this.handle.style.left = `${this.position}%`;
+
+                this.handle.setAttribute('aria-valuenow', Math.round(this.position));
+            });
+        }
+
+        reset() {
+            this.setPosition(50);
+        }
+    }
+
+    let sliderInstance = null;
+
     function initSlider() {
-        let isResizing = false;
-
-        const setSliderPos = (x) => {
-            const rect = comparisonContainer.getBoundingClientRect();
-            let pos = ((x - rect.left) / rect.width) * 100;
-            pos = Math.max(0, Math.min(pos, 100)); 
-
-            imgAfter.style.width = `100%`;
-            imgAfter.style.left = `0`;
-            imgAfter.style.clipPath = `inset(0 0 0 ${pos}%)`;
-
-            sliderHandle.style.left = `${pos}%`;
-        };
-
-        // Initial Position 
-        setSliderPos(comparisonContainer.getBoundingClientRect().left + comparisonContainer.offsetWidth / 2);
-
-        comparisonContainer.addEventListener('mousedown', () => isResizing = true);
-        window.addEventListener('mouseup', () => isResizing = false);
-        window.addEventListener('mousemove', e => {
-            if (!isResizing) return;
-            setSliderPos(e.pageX);
-        });
-
-        // Touch support
-        comparisonContainer.addEventListener('touchstart', (e) => {
-            isResizing = true;
-        }, { passive: true });
-
-        window.addEventListener('touchend', () => isResizing = false);
-        window.addEventListener('touchmove', e => {
-            if (!isResizing) return;
-            setSliderPos(e.touches[0].pageX);
-        });
+        if (!sliderInstance) {
+            sliderInstance = new ImageCompareSlider(comparisonContainer, sliderHandle, imgAfter);
+        } else {
+            sliderInstance.reset();
+        }
     }
 
     // --- Actions ---
