@@ -86,6 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     loader.style.display = 'none';
                     resultState.style.display = 'block';
                     resultState.classList.add('fade-in');
+
+                    const aspectRatio = imgAfter.naturalHeight / imgAfter.naturalWidth;
+                    comparisonContainer.style.aspectRatio = 'auto';
+                    comparisonContainer.style.height = `${comparisonContainer.offsetWidth * aspectRatio}px`;
+
+                    window.addEventListener('resize', () => {
+                        comparisonContainer.style.height = `${comparisonContainer.offsetWidth * aspectRatio}px`;
+                    }, { once: true });
+
                     initSlider();
 
                     if (window.innerWidth < 768) {
