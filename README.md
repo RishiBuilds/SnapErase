@@ -14,6 +14,8 @@
 ## Features
 
 - **Precision Background Removal**: Leverages the `u2net` model (via `rembg`) for complex edge detection.
+- **Modern UI Design**: Sleek, AI-native interface featuring **Lucide Icons** and glassmorphism.
+- **Socials**: Integrated "Trusted By" section showcasing creative professional adoption (Creativio, PixelForge, FluxCreative, etc.).
 - **Real-Time Preview**: Interactive before/after comparison slider built with vanilla JS.
 - **Enterprise-Grade Security**: Hardened with CSRF protection, rate limiting, and strict CSP headers.
 - **High Performance**: 
@@ -25,7 +27,7 @@
 
 - **Backend**: Python 3.9+, Flask
 - **AI Core**: `rembg` (U2-Net), PIL (Pillow)
-- **Frontend**: Modern Vanilla CSS (Flexbox/Grid), Vanilla JavaScript (ES6+)
+- **Frontend**: Modern Vanilla CSS (Flexbox/Grid), Vanilla JavaScript (ES6+), **Lucide Icons**
 - **Security**: Flask-WTF (CSRF), Flask-Limiter (Rate Limiting)
 - **Deployment**: Gunicorn, Docker, Alpine Linux
 
