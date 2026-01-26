@@ -4,7 +4,7 @@ from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 
-# Load env vars to ensure they are available for Limiter config
+# Load env vars 
 load_dotenv()
 
 csrf = CSRFProtect()

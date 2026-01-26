@@ -29,7 +29,7 @@ def validate_image(file: FileStorage) -> Tuple[bool, Optional[str]]:
     if file.mimetype not in ALLOWED_MIME_TYPES:
         return False, f"Unsupported file type: {file.mimetype}. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
     
-    # Check file size (already limited by Flask MAX_CONTENT_LENGTH, but double checking here)
+    # Check file size (double checking here)
     file.seek(0, os.SEEK_END)
     size = file.tell()
     file.seek(0)
