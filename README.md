@@ -6,7 +6,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**SnapErase** (v1.0.0) is a professional-grade, AI-powered background removal tool. It combines the power of deep learning with a streamlined, secure web interface to provide instant, high-quality image processing.
+**SnapErase** (v1.1.0) is a professional-grade, AI-powered background removal tool. It combines the power of deep learning with a streamlined, secure web interface to provide instant, high-quality image processing.
 
 [Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [API Documentation](#api-documentation) • [Security](#security)
 
