@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorToast = document.getElementById('errorToast');
     const errorMsg = document.getElementById('errorMsg');
 
+    const uploadTitle = document.getElementById('uploadTitle');
+    const uploadDesc = document.getElementById('uploadDesc');
     const resultState = document.getElementById('resultState');
     const comparisonContainer = document.getElementById('comparisonContainer');
     const imgBefore = document.getElementById('imgBefore');
@@ -18,9 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let processedBlob = null;
     let progressInterval = null;
+    const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
     // --- Helpers ---
     const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const resetUploadText = () => {
+        uploadTitle.textContent = "Drag & drop an image here";
+        uploadDesc.textContent = "or click to browse";
+    };
 
     // --- Upload Logic ---
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
@@ -30,27 +38,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    uploadZone.addEventListener('dragenter', () => uploadZone.classList.add('dragover'));
-    uploadZone.addEventListener('dragover', () => uploadZone.classList.add('dragover'));
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('dragenter', () => {
+        uploadZone.classList.add('dragover');
+        uploadTitle.textContent = "Drop your image to start magic ✨";
+        uploadDesc.textContent = "Release to upload instantly";
+    });
+
+    uploadZone.addEventListener('dragover', () => {
+        if (!uploadZone.classList.contains('dragover')) {
+            uploadZone.classList.add('dragover');
+        }
+    });
+
+    uploadZone.addEventListener('dragleave', (e) => {
+        if (!uploadZone.contains(e.relatedTarget)) {
+            uploadZone.classList.remove('dragover');
+            resetUploadText();
+        }
+    });
+
     uploadZone.addEventListener('drop', e => {
         uploadZone.classList.remove('dragover');
+        resetUploadText();
         const file = e.dataTransfer.files[0];
         handleFile(file);
     });
 
     uploadZone.addEventListener('click', () => fileInput.click());
+
+    uploadZone.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            fileInput.click();
+        }
+    });
+
     fileInput.addEventListener('change', e => {
         if (e.target.files[0]) handleFile(e.target.files[0]);
+        fileInput.value = '';
     });
 
     async function handleFile(file) {
+        if (!file) return;
+
+        // Validation
         if (!file.type.startsWith('image/')) {
-            showError('Please upload a valid image file (PNG, JPG, WebP).');
+            showError('Unsupported file type. Please upload a PNG, JPG, or WebP image.');
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            showError(`File too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Max size is 16MB.`);
             return;
         }
 
         hideError();
+        uploadZone.style.pointerEvents = 'none';
         uploadZone.style.display = 'none';
         loader.style.display = 'block';
         resultState.style.display = 'none';
@@ -109,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(progressInterval);
             loader.style.display = 'none';
             uploadZone.style.display = 'block';
+            uploadZone.style.pointerEvents = 'auto';
             showError(err.message);
         }
     }
@@ -269,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetBtn.addEventListener('click', () => {
         uploadZone.style.display = 'block';
+        uploadZone.style.pointerEvents = 'auto';
         resultState.style.display = 'none';
         fileInput.value = '';
         imgBefore.src = '';

@@ -72,21 +72,22 @@
 
             <div class="main-card glass-panel">
                 <!-- Upload -->
-                <div id="uploadZone" class="upload-zone">
+                <div id="uploadZone" class="upload-zone" tabindex="0" role="button" aria-label="Upload an image"
+                    aria-describedby="uploadDesc">
                     <div class="upload-content">
                         <div class="icon-circle">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                 <polyline points="17 8 12 3 7 8" />
                                 <line x1="12" y1="3" x2="12" y2="15" />
                             </svg>
                         </div>
-                        <h3>Upload an Image</h3>
-                        <p class="text-muted" style="font-size: 0.9rem;">Drag & drop or click to browse</p>
-                        <p class="file-limits">Supports PNG, JPG, WEBP up to 16MB</p>
+                        <h3 id="uploadTitle">Drag & drop an image here</h3>
+                        <p id="uploadDesc" class="text-muted">or click to browse</p>
+                        <p class="file-limits">JPG, PNG, WEBP · Max 16MB</p>
                     </div>
-                    <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp" hidden>
+                    <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden>
                 </div>
 
                 <div class="trust-badge-small">
