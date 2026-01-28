@@ -1,12 +1,12 @@
 # SnapErase 📸
 
 [![Release](https://img.shields.io/github/v/release/RishiBuilds/SnapErase)](https://github.com/RishiBuilds/SnapErase/releases)
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.3.3%2B-lightgrey?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-lightgrey?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Docker](https://img.shields.io/badge/Docker-Optimized-blue?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**SnapErase** (v1.1.0) is a professional-grade, AI-powered background removal tool. It combines the power of deep learning with a streamlined, secure web interface to provide instant, high-quality image processing.
+**SnapErase** (v1.2.0) is a professional-grade, AI-powered background removal tool. It combines the power of deep learning with a streamlined, secure web interface to provide instant, high-quality image processing.
 
 [Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [API Documentation](#api-documentation) • [Security](#security)
 
@@ -15,22 +15,23 @@
 ## Features
 
 - **Precision Background Removal**: Leverages the `u2net` model (via `rembg`) for complex edge detection.
-- **Modern UI Design**: Sleek, AI-native interface featuring **Lucide Icons** and glassmorphism.
-- **Socials**: Integrated "Trusted By" section showcasing creative professional adoption (Creativio, PixelForge, FluxCreative, etc.).
-- **Real-Time Preview**: Interactive before/after comparison slider built with vanilla JS.
+- **Interactive UI**:
+  - **Before/After Demo**: Real-time comparison slider to see the AI magic in action.
+  - **Adaptive Navbar**: Smooth glassmorphism transition on scroll for a premium feel.
+- **Modern Design**: Sleek, AI-native interface featuring **Outfit** typography and glassmorphism panels.
 - **Enterprise-Grade Security**: Hardened with CSRF protection, rate limiting, and strict CSP headers.
 - **High Performance**: 
   - **In-Memory Buffer**: Processing happens in RAM to minimize disk I/O.
   - **Smart Caching**: Hash-based deduplication to serve repeat images instantly.
-- **DevOps Ready**: Fully containerized with Docker and served via Gunicorn for concurrency.
+- **Cloud Native**: Optimized multistage Docker build with automated healthchecks and non-root security.
 
 ## Tech Stack
 
-- **Backend**: Python 3.9+, Flask
+- **Backend**: Python 3.10+, Flask
 - **AI Core**: `rembg` (U2-Net), PIL (Pillow)
 - **Frontend**: Modern Vanilla CSS (Flexbox/Grid), Vanilla JavaScript (ES6+), **Lucide Icons**
 - **Security**: Flask-WTF (CSRF), Flask-Limiter (Rate Limiting)
-- **Deployment**: Gunicorn, Docker, Alpine Linux
+- **Infrastructure**: Gunicorn, Docker (Multistage), Healthcheck APIs
 
 ## Installation
 
@@ -65,10 +66,14 @@
 
 ### Docker Deployment
 
+SnapErase uses a multistage build for a lean production image:
+
 ```bash
 docker build -t snaperase:latest .
 docker run -d -p 5000:5000 --name snaperase_app snaperase:latest
 ```
+
+The container includes a built-in healthcheck that monitors the service status every 30 seconds.
 
 ## API Documentation
 
@@ -93,7 +98,8 @@ docker run -d -p 5000:5000 --name snaperase_app snaperase:latest
 SnapErase implements several layers of protection:
 - **Rate Limiting**: Prevents API abuse (default: 200/day, 50/hour).
 - **MIME Validation**: Strict checking of magic bytes to prevent polyglot file attacks.
-- **Header Hardening**: X-Content-Type-Options, X-Frame-Options, and X-XSS-Protection enabled.
+- **Non-Root Execution**: Docker container runs as a non-privileged `appuser`.
+- **Header Hardening**: CSP, X-Content-Type-Options, X-Frame-Options, and X-XSS-Protection.
 
 ---
 
