@@ -21,9 +21,9 @@
     <div class="bg-glow bg-purple"></div>
     <div class="bg-glow bg-pink"></div>
 
-    <div class="app-wrapper">
-        <!-- Nav -->
-        <nav class="navbar fade-in">
+    <!-- Nav -->
+    <nav class="navbar fade-in">
+        <div class="nav-container">
             <div class="logo">
                 <div class="logo-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,8 +47,10 @@
                     GitHub
                 </a>
             </div>
-        </nav>
+        </div>
+    </nav>
 
+    <div class="app-wrapper">
         <!-- Hero -->
         <main class="hero-section fade-in">
             <div class="hero-content">
@@ -66,8 +68,37 @@
                     </svg>
                     AI-Powered Magic
                 </div>
-                <h1>Remove Backgrounds<br><span class="gradient-text">Instantly & Free.</span></h1>
-                <p class="hero-sub">Upload an image and get a transparent background in seconds.</p>
+                <h1>Remove Image Backgrounds<br><span class="gradient-text">in 1 Click — Free & Private</span></h1>
+                <p class="hero-sub">No signup. No watermarks. Powered by AI.</p>
+            </div>
+
+            <!-- Demo Section -->
+            <div class="demo-section">
+                <div class="demo-wrapper">
+                    <h3>See the magic in action</h3>
+                    <div id="demoSlider" class="comparison-container demo-slider">
+                        <img src="{{ url_for('static', filename='images/demo-original.jpg') }}" class="comparison-image"
+                            alt="Original Demo">
+                        <img src="{{ url_for('static', filename='images/demo-after.png') }}"
+                            class="comparison-image image-after" alt="Processed Demo"
+                            style="clip-path: inset(0 0 0 50%);">
+                        <div id="demoSliderHandle" class="slider-handle" style="left: 50%;">
+                            <div class="handle-line"></div>
+                            <div class="handle-circle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="15 18 9 12 15 6" />
+                                </svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="badge-label original-label">Original</div>
+                        <div class="badge-label removed-label">Removed</div>
+                    </div>
+                </div>
             </div>
 
             <div class="main-card glass-panel">
@@ -75,16 +106,15 @@
                 <div id="uploadZone" class="upload-zone" tabindex="0" role="button" aria-label="Upload an image"
                     aria-describedby="uploadDesc">
                     <div class="upload-content">
-                        <div class="icon-circle">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
+                        <div class="icon-circle silhouette-placeholder">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
                             </svg>
                         </div>
-                        <h3 id="uploadTitle">Drag & drop an image here</h3>
-                        <p id="uploadDesc" class="text-muted">or click to browse</p>
+                        <h3 id="uploadTitle">Upload Image →</h3>
+                        <p id="uploadDesc" class="text-muted">Processing starts instantly</p>
                         <p class="file-limits">JPG, PNG, WEBP · Max 16MB</p>
                     </div>
                     <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden>
@@ -110,7 +140,7 @@
                             stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12" />
                         </svg>
-                        100% Automatic
+                        Fully automatic — no manual edits
                     </span>
                 </div>
 

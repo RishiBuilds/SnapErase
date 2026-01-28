@@ -22,15 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let progressInterval = null;
     const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
-    // --- Helpers ---
+    // Navbar Scroll Logic
+    const navbar = document.querySelector('.navbar');
+    const handleScroll = () => {
+        if (window.scrollY > 20) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    // Helpers
     const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const resetUploadText = () => {
-        uploadTitle.textContent = "Drag & drop an image here";
-        uploadDesc.textContent = "or click to browse";
+        uploadTitle.textContent = "Upload Image →";
+        uploadDesc.textContent = "Processing starts instantly";
     };
 
-    // --- Upload Logic ---
+    // Upload Logic
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
         uploadZone.addEventListener(event, e => {
             e.preventDefault();
@@ -40,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     uploadZone.addEventListener('dragenter', () => {
         uploadZone.classList.add('dragover');
-        uploadTitle.textContent = "Drop your image to start magic ✨";
-        uploadDesc.textContent = "Release to upload instantly";
+        uploadTitle.textContent = "Drop to remove background";
+        uploadDesc.textContent = "Release to start magic";
     });
 
     uploadZone.addEventListener('dragover', () => {
@@ -273,7 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
         setPosition(pos) {
             this.position = Math.max(0, Math.min(pos, 100));
 
+            const imgBefore = this.container.querySelector('img:not(.image-after)');
+
             requestAnimationFrame(() => {
+                // Clip "Before" to the left
+                if (imgBefore) {
+                    imgBefore.style.clipPath = `inset(0 ${100 - this.position}% 0 0)`;
+                }
+                // Clip "After" to the right
                 this.imgAfter.style.width = '100%';
                 this.imgAfter.style.left = '0';
                 this.imgAfter.style.clipPath = `inset(0 0 0 ${this.position}%)`;
@@ -341,4 +360,30 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('active');
         });
     });
+
+    // Demo Slider
+    const demoSlider = document.getElementById('demoSlider');
+    const demoSliderHandle = document.getElementById('demoSliderHandle');
+    const demoImgAfter = demoSlider ? demoSlider.querySelector('.image-after') : null;
+    const demoImgBefore = demoSlider ? demoSlider.querySelector('img:not(.image-after)') : null;
+
+    if (demoSlider && demoSliderHandle && demoImgAfter) {
+        const setDemoHeight = () => {
+            if (demoImgBefore && demoImgBefore.naturalWidth) {
+                const aspectRatio = demoImgBefore.naturalHeight / demoImgBefore.naturalWidth;
+                demoSlider.style.height = `${demoSlider.offsetWidth * aspectRatio}px`;
+            } else {
+                demoSlider.style.height = `${demoSlider.offsetWidth * 0.625}px`;
+            }
+        };
+
+        if (demoImgBefore && demoImgBefore.complete) {
+            setDemoHeight();
+        } else if (demoImgBefore) {
+            demoImgBefore.addEventListener('load', setDemoHeight);
+        }
+
+        window.addEventListener('resize', setDemoHeight);
+        new ImageCompareSlider(demoSlider, demoSliderHandle, demoImgAfter);
+    }
 });
